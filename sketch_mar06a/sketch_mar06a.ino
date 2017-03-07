@@ -2,7 +2,7 @@
 // code for controlling 4-button interface for dental ultrasound positioner
 // J. Macoskey
 // created: 3/6/17
-// edited:
+// edited: 3/7/17
 
 
     
@@ -12,6 +12,7 @@
     // - correct trig time
     // - check if pullup needed
 
+#include <stdio.h>
 
 const int iret_pin = A0; // input full retraction
 const int ibck_pin = A1; // input back step
@@ -27,8 +28,13 @@ int bck_state = LOW;
 int for_state = LOW;
 int ext_state = LOW;
 
+int i = 0;
+
 unsigned long lastDebounce = 0;
-unsigned long debounceDel = 50;
+unsigned long thisDebounce = 0;
+unsigned long debounceDelay = 500;
+
+int state = LOW;
 
 void setup() {
   Serial.begin(9600);
@@ -42,33 +48,48 @@ void setup() {
   pinMode(oext_pin, OUTPUT);
 
   // initialize all output pins to low
-  digitalWrite(oret_pin,0);
-  digitalWrite(obck_pin,0);
-  digitalWrite(ofor_pin,0);
-  digitalWrite(oext_pin,0);
+  digitalWrite(oret_pin,LOW);
+  digitalWrite(obck_pin,LOW);
+  digitalWrite(ofor_pin,LOW);
+  digitalWrite(oext_pin,LOW);
 }
 
 void loop() {
-  ret_now = analogRead(iret_pin);
-  bck_now = analogRead(ibck_pin);
-  for_now = analogRead(ifor_pin);
-  ext_now = analogRead(iext_pin);
+  int ret_now = analogRead(iret_pin);
   
-  if (num_pressed == 1){
-    if (ret_state == HIGH){
-      digitalWrite(oret_pin, HIGH);
-    }
-    if (bck_state == HIGH){
-      digitalWrite(obck_pun, HIGH);
-    }
-    if (for_state == HIGH){
-      digitalWrite(ofor_pin, HIGH);
-    }
-    if (ext_state == HIGH){
-      digitalWrite(obck_pin, HIGH);
-    }
-    delay(100)
+  if ((ret_now == 1023) && state == LOW){
+    thisDebounce = millis();
+    Serial.println(lastDebounce);
+    state = HIGH;
+  } else {
+    digitalWrite(oret_pin,LOW);
+    state = LOW;
   }
+  if ((millis() - lastDebounce) > debounceDelay && state){
+    digitalWrite(oret_pin,HIGH);
+    //Serial.println("pressed");
+    delay(100);
+  } else {
+    digitalWrite(oret_pin,LOW);
+  }
+  
+
+  
+//  if (num_pressed == 1){
+//    if (ret_state == HIGH){
+//      digitalWrite(oret_pin, HIGH);
+//    }
+//    if (bck_state == HIGH){
+//      digitalWrite(obck_pin, HIGH);
+//    }
+//    if (for_state == HIGH){
+//      digitalWrite(ofor_pin, HIGH);
+//    }
+//    if (ext_state == HIGH){
+//      digitalWrite(obck_pin, HIGH);
+//    }
+//    delay(100);
+//  }
     
   
 }
