@@ -4,6 +4,15 @@
 // created: 3/6/17
 // edited:
 
+
+    
+    // need to add:
+    // - debounce
+    // - multi-press preventer
+    // - correct trig time
+    // - check if pullup needed
+
+
 const int iret_pin = A0; // input full retraction
 const int ibck_pin = A1; // input back step
 const int ifor_pin = A2; // input forward step
@@ -13,14 +22,16 @@ const int obck_pin = 5;
 const int ofor_pin = 6;
 const int oext_pin = 9;
 
-int ret_state = 0;
-int bck_state = 0;
-int for_state = 0;
-int ext_state = 0;
-int counter = 0;
+int ret_state = LOW;
+int bck_state = LOW;
+int for_state = LOW;
+int ext_state = LOW;
+
+unsigned long lastDebounce = 0;
+unsigned long debounceDel = 50;
 
 void setup() {
-  // put your setup code here, to run once:
+  Serial.begin(9600);
   pinMode(iret_pin, INPUT_PULLUP);
   pinMode(ibck_pin, INPUT_PULLUP);
   pinMode(ifor_pin, INPUT_PULLUP);
@@ -29,17 +40,21 @@ void setup() {
   pinMode(obck_pin, OUTPUT);
   pinMode(ofor_pin, OUTPUT);
   pinMode(oext_pin, OUTPUT);
+
+  // initialize all output pins to low
+  digitalWrite(oret_pin,0);
+  digitalWrite(obck_pin,0);
+  digitalWrite(ofor_pin,0);
+  digitalWrite(oext_pin,0);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  ret_state = analogRead(iret_pin);
-  bck_state = analogRead(ibck_pin);
-  for_state = analogRead(ifor_pin);
-  ext_state = analogRead(iext_pin);
-  num_pressed = ret_state + bck_state + for_state + ext_state;
+  ret_now = analogRead(iret_pin);
+  bck_now = analogRead(ibck_pin);
+  for_now = analogRead(ifor_pin);
+  ext_now = analogRead(iext_pin);
   
-  if (num_pressed <= 1){
+  if (num_pressed == 1){
     if (ret_state == HIGH){
       digitalWrite(oret_pin, HIGH);
     }
@@ -52,6 +67,7 @@ void loop() {
     if (ext_state == HIGH){
       digitalWrite(obck_pin, HIGH);
     }
+    delay(100)
   }
     
   
