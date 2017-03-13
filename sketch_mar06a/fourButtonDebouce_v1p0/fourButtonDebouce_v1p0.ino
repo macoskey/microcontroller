@@ -9,7 +9,7 @@ const int buttonPin[] = {2, 3, 4, 5};
 const int outputPin[] = {6, 7, 8, 9};
 const int ledPin = 13;
 
-int ledState = LOW;
+int ledState = HIGH;
 int currButtonState[NUMBUTTONS];
 int lastButtonState[NUMBUTTONS];
 
