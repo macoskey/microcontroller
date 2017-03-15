@@ -8,12 +8,12 @@
 #define RESTTIME 500
 
 const int inputPin = A0;
-const int outputPin[] = {1, 2, 3, 4};
+const int outputPin[] = {2,3,4,5};
 const int ledPin = 13;
 
 int ledState = HIGH;  // debug led state
 
-int pressCount = 0; // button debounce counter
+int pressCount = 0;   // button debounce counter
 int pressState = 0;   // state for debounce counter
 
 int restCount = 0;    // counter for rest state
@@ -57,6 +57,7 @@ void loop() {
         if (millis() > pressCount + DEBTIME){
           Serial.println("button 1 pressed");
           digitalWrite(outputPin[1], HIGH);
+          delay(2000);
           pressState = 0;
           restCount = millis();
           restState = 1;
@@ -102,6 +103,7 @@ void loop() {
         if (millis() > pressCount + DEBTIME){
           Serial.println("button 4 pressed");
           digitalWrite(outputPin[4], HIGH);
+          delay(2000);
           pressState = 0;
           restCount = millis();
           restState = 1;
